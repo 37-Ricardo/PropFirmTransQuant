@@ -1,7 +1,7 @@
 """NQ 期货回测项目包。
 
-当前阶段只包含数据读取、质量检查和周期重采样模块。
+当前阶段包含数据读取、质量检查、周期重采样和策略存放模块。
 后续策略、撮合、绩效统计等模块可以继续放在这个包下面。
 """
 
-__all__ = ["data_loader", "quality", "resample"]
+__all__ = ["data_loader", "quality", "resample", "strategies"]

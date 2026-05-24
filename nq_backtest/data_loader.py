@@ -149,6 +149,18 @@ def _parse_datetime_to_new_york(series: pd.Series, input_timezone: str) -> pd.Se
     - nonexistent="shift_forward"：不存在时间向前移动到最近合法时间。
     """
 
+    text_values = series.dropna().astype(str).str.strip()
+    has_explicit_timezone = text_values.str.contains(r"(?:Z|[+-]\d{2}:?\d{2})$", regex=True)
+
+    # TradingView 导出的时间通常类似 2026-05-19T14:45:00-04:00。
+    # 对带显式时区的时间戳，先用 utc=True 解析，可以稳妥处理跨夏令时
+    # 时同时存在 -04:00 / -05:00 偏移的情况。
+    if has_explicit_timezone.any():
+        if not has_explicit_timezone.all():
+            raise ValueError("Datetime column mixes timezone-aware and naive values.")
+        parsed_with_utc = pd.to_datetime(series, errors="coerce", utc=True)
+        return parsed_with_utc.dt.tz_convert(ZoneInfo("America/New_York"))
+
     parsed = pd.to_datetime(series, errors="coerce")
     if parsed.dt.tz is None:
         localized = parsed.dt.tz_localize(

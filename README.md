@@ -40,6 +40,12 @@ python main.py --csv examples\sample_nq_1min.csv --timeframe 5min
 python main.py --csv data\raw\NQ_1min.csv --timeframe 15min --input-tz America/New_York
 ```
 
+检查 TradingView 原生 5min CSV：
+
+```powershell
+python main.py --csv data\raw\NQ_5min.csv --input-timeframe 5min --timeframe 15min
+```
+
 如果 CSV 的时间戳是 UTC：
 
 ```powershell
